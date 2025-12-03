@@ -1,0 +1,189 @@
+/*
+Programa: Menu Restaurante
+Autores: William Pulecio, Andres Fernandez, Jean
+Fecha: 3 de dic 2025
+*/
+#include <iostream> // entrada y salida
+#include <string>   // para manejo de cadenas  
+#include <fstream>  // para manejo de archivos
+#include <locale>   // para tildes y ñ
+#include <iomanip>  // para alineacion de textos y control de decimales
+#include <cstdlib> // para limpiar consola
+#include <sstream> // para manejo de conversiones
+#include <windows.h> // acentos en windows
+using namespace std;
+
+// Limpiar consola
+void limpiarConsola() {
+        system("cls");
+}
+
+// Estructura para un plato del menu
+struct Plato {
+    string codigo;
+    string nombre;
+    double precio;
+    int numCalificaciones;
+    double sumaCalificaciones;
+    double promedio;
+};
+// estructura para un pedido
+struct ItemPedido {
+    string codigoPlato;
+    string nombrePlato;
+    double precio;
+};
+// prototipos de funciones
+void mostrarMenu();
+void agregarPlato(Plato platos[], int &numPlatos);
+void verMenu(Plato platos[], int numPlatos);
+void realizarPedido(Plato platos[], int numPlatos);
+void calificarPlato(Plato platos[], int numPlatos);
+void verRanking(Plato platos[], int numPlatos);
+void guardarArchivos(Plato platos[], int numPlatos);
+void cargarArchivos(Plato platos[], int &numPlatos);
+int buscarPlato(Plato platos[], int numPlatos,  string codigo);
+void ordenarPorCalificacion(Plato platos[], int numPlatos);
+void mostrarFactura(ItemPedido pedido[], int numItems, double subtotal, double iva, double total);
+
+//funciones para la valadacion y lectura de datos
+bool validarNumero(string str);
+bool validarTexto(string str);
+bool validarNoVacio(string str);
+bool validarSoloNumeros(string str);
+double leerPrecio();
+int leerCalificacion();
+char leerOpcionSN();
+int leerOpcionMenu();
+string leerCodigoPlato();
+
+// funcion principal
+int main() {
+        SetConsoleOutputCP(1252);
+        setlocale(LC_ALL, "es_ES.UTF-8"); // para tildes y ñ
+        Plato platos[1000]; // arreglo para almacenar platos
+        int numPlatos = 0; // contador de platos
+        int opcion;
+        cargarArchivos(platos, numPlatos); // cargar datos desde archivos
+
+        do {
+            mostrarMenu();
+            opcion = leerOpcionMenu();
+                
+            limpiarConsola();    
+
+            switch (opcion) {
+                case 1:
+                    agregarPlato(platos, numPlatos);
+                    break;
+                case 2:
+                    verMenu(platos, numPlatos);
+                    break;
+                case 3:
+                    realizarPedido(platos, numPlatos);
+                    break;
+                case 4:
+                    calificarPlato(platos, numPlatos);
+                    break;
+                case 5:
+                    verRanking(platos, numPlatos);
+                    break;
+                case 6:
+                    guardarArchivos(platos, numPlatos);
+                    cout << "\n===  GRACIAS POR UTILIZAR NUESTRO PROGRAMA===\n";
+                    cout << "Datos guardados exitosamente.\n";
+                    break;
+                default:
+                    cout << "Opción inválida. Por favor, intente de nuevo.\n";
+            }
+            if (opcion != 6) {
+                cout << "\nPresione Enter para continuar...";
+                cin.ignore();
+                cin.get();
+            }
+        } while (opcion != 6);
+        return 0;
+}
+
+//ahora implementamos las funciones declaradas
+void mostrarMenu() {
+        limpiarConsola();
+        cout << "\n════════════════════════════════════════════════\n";
+        cout << "     SISTEMA DE MENÚ DIGITAL RESTAURANTE         \n";
+        cout << "════════════════════════════════════════════════\n";
+        cout << "\n 1. Agregar plato al menú\n";
+        cout << " 2. Ver menú completo\n";
+        cout << " 3. Realizar pedido\n";
+        cout << " 4. Calificar plato\n";
+        cout << " 5. Ver ranking de platos\n";
+        cout << " 6. Salir\n";
+        cout << "\n═══════════════════════════════════════════════\n";
+}
+
+// agregar plato al menu
+void agregarPlato(Plato platos[], int &numPlatos) {
+        Plato nuevo;
+        cout << "=== AGREGAR NUEVO PLATO AL MENÚ ===\n";
+
+        //validamos el codigo del plato
+        do{
+                cout << "Ingrese el código del plato: ";
+                getline(cin, nuevo.codigo);
+                if (!validarNoVacio(nuevo.codigo)) {
+                    cout << "El código no puede estar vacío. Intente de nuevo.\n";
+                } else if (buscarPlato(platos, numPlatos, nuevo.codigo) != -1) {
+                    cout << "El código ya existe. Intente con otro código.\n";
+                    nuevo.codigo = "";
+                }
+        } while(!validarNoVacio(nuevo.codigo)); 
+
+        //validamos el nombre del plato
+        do {
+                cout << "Ingrese el nombre del plato: ";
+                getline(cin, nuevo.nombre);
+                if (!validarNoVacio(nuevo.nombre)) {
+                    cout << " El nombre no puede estar vacío. Intente de nuevo.\n";
+                } else if (!validarTexto(nuevo.nombre)) {
+                    cout << " El nombre solo debe contener letras y espacios. Intente de nuevo.\n";
+                }
+        } while (!validarNoVacio(nuevo.nombre) || !validarTexto(nuevo.nombre));
+
+        //validamos el precio del plato
+        nuevo.precio = leerPrecio();
+        nuevo.numCalificaciones = 0;
+        nuevo.sumaCalificaciones = 0;
+        nuevo.promedio = 0;
+        platos[numPlatos] = nuevo;
+        numPlatos++;
+        cout << "\nPlato agregado exitosamente al menú.\n";
+}
+
+// mostrar el menu completo
+void verMenu(Plato platos[], int numPlatos) {
+        if(numPlatos == 0) {
+                cout << "El menú está vacío. No hay platos para mostrar.\n";
+                return;
+        }
+
+        cout << "\n═══════════════════════════════════════════════════════════════\n";
+        cout << "                                MENÚ                          \n";
+        cout << "═══════════════════════════════════════════════════════════════\n\n";
+        
+        cout << left << setw(10) << "CÓDIGO" 
+             << left << setw(30) << "NOMBRE DEL PLATO" 
+             << right << setw(15) << "PRECIO" 
+             << "CALIFICACIÓN\n";
+        cout << "═══════════════════════════════════════════════════════════════\n";
+        for (int i = 0; i < numPlatos; i++) {
+                cout << left << setw(10) << platos[i].codigo
+                     << setw(30) << platos[i].nombre
+                     << "$" << setw(14) << fixed << setprecision(2) << platos[i].precio;
+                
+                if (platos[i].numCalificaciones > 0) {
+                        cout << platos[i].promedio << " (" << platos[i].numCalificaciones << ")";
+                } else {
+                        cout << "Sin calificar";
+                }
+                cout << "\n";
+        }
+}
