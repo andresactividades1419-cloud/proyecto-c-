@@ -1,5 +1,8 @@
 /*
-Programa: Menu Restaurante
+Programa: Menu Restaurante Digital
+Descripción: Este programa permite gestionar un menú digital para un restaurante,
+             incluyendo la adición de platos, realización de pedidos, calificación
+             de platos y visualización de un ranking basado en las calificaciones.
 Autores: William Pulecio, Andres Fernandez, Jean
 Fecha: 3 de dic 2025
 */
@@ -108,16 +111,16 @@ int main() {
 //ahora implementamos las funciones declaradas
 void mostrarMenu() {
         limpiarConsola();
-        cout << "\n════════════════════════════════════════════════\n";
+        cout << "\n--------------------------------------------------\n";
         cout << "     SISTEMA DE MENÚ DIGITAL RESTAURANTE         \n";
-        cout << "════════════════════════════════════════════════\n";
+        cout << "--------------------------------------------------\n";
         cout << "\n 1. Agregar plato al menú\n";
         cout << " 2. Ver menú completo\n";
         cout << " 3. Realizar pedido\n";
         cout << " 4. Calificar plato\n";
         cout << " 5. Ver ranking de platos\n";
         cout << " 6. Salir\n";
-        cout << "\n═══════════════════════════════════════════════\n";
+        cout << "\n------------------------------------------------\n";
 }
 
 // agregar plato al menu
@@ -139,7 +142,7 @@ void agregarPlato(Plato platos[], int &numPlatos) {
 
         //validamos el nombre del plato
         do {
-                cout << "Ingrese el nombre del plato: ";
+               cout << "Ingrese el nombre del plato: ";
                 getline(cin, nuevo.nombre);
                 if (!validarNoVacio(nuevo.nombre)) {
                     cout << " El nombre no puede estar vacío. Intente de nuevo.\n";
@@ -165,15 +168,15 @@ void verMenu(Plato platos[], int numPlatos) {
                 return;
         }
 
-        cout << "\n═══════════════════════════════════════════════════════════════\n";
+        cout << "\n---------------------------------------------------------------\n";
         cout << "                                MENÚ                          \n";
-        cout << "═══════════════════════════════════════════════════════════════\n\n";
+        cout << "---------------------------------------------------------------\n\n";
         
         cout << left << setw(10) << "CÓDIGO" 
              << left << setw(30) << "NOMBRE DEL PLATO" 
              << right << setw(15) << "PRECIO" 
              << "CALIFICACIÓN\n";
-        cout << "═══════════════════════════════════════════════════════════════\n";
+        cout << "---------------------------------------------------------------\n";
         for (int i = 0; i < numPlatos; i++) {
                 cout << left << setw(10) << platos[i].codigo
                      << setw(30) << platos[i].nombre
@@ -187,3 +190,75 @@ void verMenu(Plato platos[], int numPlatos) {
                 cout << "\n";
         }
 }
+
+// realizar un pedido
+void realizarPedido(Plato platos[], int numPlatos) {
+        if(numPlatos == 0) {
+                cout << "El menú está vacío. No se pueden realizar pedidos.\n";
+                return;
+        }
+        ItemPedido pedido[1000];
+        int numItems = 0;
+        string codigo;
+        char continuar;
+
+        cout << "=== REALIZAR PEDIDO ===\n";
+        cout << "(Escriba '0' para volver al menú principal)\n\n";
+        verMenu(platos, numPlatos);
+
+        do{
+            do{ 
+                cout << "\nIngrese el codigo del plato:";
+                codigo = leerCodigoPlato();
+
+                if(codigo == "0"){
+                    if(numItems > 0){
+                        cout << "\nTienes platos en el pedido. Desea finalizar el pedido? (s/n): ";
+                        char cancelar = leerOpcionSN();
+                        if(cancelar == 's' || cancelar == 'S'){
+                            cout<< "\nPedido cancelado. Regresando al menú principal...\n";
+                            return;
+                        } 
+                    } else {
+                        cout<< "\nRegresando al menú principal...\n";
+                        return;
+                    }
+                }
+            } while(codigo == "0");
+            int pos = buscarPlato(platos, numPlatos, codigo);
+            if(pos == -1){
+                cout<< "Plato no encontrado. Intente de nuevo.\n";
+            } else {
+                pedido[numItems].codigoPlato = platos[pos].codigo;
+                pedido[numItems].nombrePlato = platos[pos].nombre;
+                pedido[numItems].precio = platos[pos].precio;
+                numItems++;
+                cout << "Plato agregado al pedido." << platos[pos].nombre << "\n";
+                cout << "¿Desea agregar otro plato al pedido? (s/n): ";
+                continuar = leerOpcionSN();
+                if(continuar == 'n' || continuar == 'N'){
+                    break;
+                }
+            }
+        } while(true);
+
+        if (numItems > 0){
+            double subtotal = 0;
+            for(int i = 0; i < numItems; i++){
+                subtotal += pedido[i].precio;
+            }
+            double iva = subtotal * 0.19;
+            double total = subtotal + iva;
+            mostrarFactura(pedido, numItems, subtotal, iva, total);
+        }
+    }
+ 
+//factura del pedido
+void mostrarFactura(ItemPedido pedido[], int numItems, double subtotal, double iva, double total) {
+       
+            
+
+                            
+                        
+                        
+                        
