@@ -485,4 +485,207 @@ void ordenarPorCalificacion(Plato platos[], int numPlatos) {
     }
 }
 // funciones de validacion y lectura de datos
-            
+ 
+//funciones de validacion 
+ol validarNumero(string str) {
+    if(str.empty()) return false;
+
+    bool puntoEncontrado = false;
+    for(size_t i = 0, i < str.length(); i++) {
+        if(str[i] == "." || str[i] == ",") {
+            if(puntoEncontrado) return false;
+            puntoEncontrado = true;
+        } else if(str[i] < "0" || str[i] > "9") {
+            return false;
+        }
+    }
+    return true;
+    }
+
+    bool validarSoloNumeros(string str) {
+    if(str.empty()) return false;
+    
+    for(size_t i = 0; i < str.length(); i++) {
+        if(str[i] < '0' || str[i] > '9') {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool validarTexto(string str) {
+    if(str.empty()) return false;
+    
+    for(size_t i = 0; i < str.length(); i++) {
+        char c = str[i];
+        if(!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || 
+             c == ' ' || c == 'ñ' || c == 'Ñ' || 
+             c == 'á' || c == 'é' || c == 'í' || c == 'ó' || c == 'ú' ||
+             c == 'Á' || c == 'É' || c == 'Í' || c == 'Ó' || c == 'Ú')) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool validarNoVacio(string str) {
+    if(str.empty()) return false;
+    
+    // Verificar que no sea solo espacios
+    for(size_t i = 0; i < str.length(); i++) {
+        if(str[i] != ' ') return true;
+    }
+    return false;
+}
+
+leerCodigoPstring llato() {
+    string codigo;
+    
+    do {
+        getline(cin, codigo);
+        
+        if(codigo == "0") {
+            return "0";
+        }
+        
+        if(!validarNoVacio(codigo)) {
+            cout << "Error: El código no puede estar vacío.\nIngrese el código del plato: ";
+            continue;
+        }
+        
+        if(!validarSoloNumeros(codigo)) {
+            cout << "Error: El código solo debe contener números.\nIngrese el código del plato: ";
+            continue;
+        }
+        
+        return codigo;
+        
+    } while(true);
+}
+
+double leerPrecio() {
+    string entrada;
+    double precio;
+    
+    do {
+        cout << "Precio: $";
+        getline(cin, entrada);
+        
+        if(entrada == "0") {
+            return -1;
+        }
+        
+        if(!validarNoVacio(entrada)) {
+            cout << "Error: Debe ingresar un precio.\n";
+            continue;
+        }
+        
+        if(!validarNumero(entrada)) {
+            cout << "Error: El precio debe ser un número válido.\n";
+            continue;
+        }
+        
+        stringstream ss(entrada);
+        ss >> precio;
+        
+        if(precio <= 0) {
+            cout << "Error: El precio debe ser mayor que 0.\n";
+            continue;
+        }
+        
+        return precio;
+        
+    } while(true);
+}
+
+int leerCalificacion() {
+    string entrada;
+    int calificacion;
+    
+    do {
+        cout << "Calificación (1-5): ";
+        getline(cin, entrada);
+        
+        if(entrada == "0") {
+            return -1;
+        }
+        
+        if(!validarNoVacio(entrada)) {
+            cout << "Error: Debe ingresar una calificación.\n";
+            continue;
+        }
+        
+        if(!validarNumero(entrada)) {
+            cout << "Error: La calificación debe ser un número.\n";
+            continue;
+        }
+        
+        stringstream ss(entrada);
+        ss >> calificacion;
+        
+        if(calificacion < 1 || calificacion > 5) {
+            cout << "Error: La calificación debe estar entre 1 y 5.\n";
+            continue;
+        }
+        
+        return calificacion;
+        
+    } while(true);
+}
+
+char leerOpcionSN() {
+    string entrada;
+    
+    do {
+        getline(cin, entrada);
+        
+        if(!validarNoVacio(entrada)) {
+            cout << "Error: Debe ingresar una opción (s/n): ";
+            continue;
+        }
+        
+        if(entrada.length() != 1) {
+            cout << "Error: Ingrese solo 's' o 'n': ";
+            continue;
+        }
+        
+        char opcion = entrada[0];
+        if(opcion != 's' && opcion != 'S' && opcion != 'n' && opcion != 'N') {
+            cout << "Error: Opción inválida. Ingrese 's' o 'n': ";
+            continue;
+        }
+        
+        return opcion;
+        
+    } while(true);
+}
+
+int leerOpcionesMenu() {
+    string entrada;
+    int opcion;
+
+    do{
+        cout << "ingrese su opcion: ";
+        getline(cin, entrada);
+
+        if(!validarNoVacio(entrada)) {
+            cout << "error: debe ingresar una opcion. \n";
+            continue;
+        }
+
+         if(!validarNumero(entrada)) {
+            cout << "Error: Debe ingresar un número válido (1-6).\n";
+            continue;
+        }
+
+         stringstream ss(entrada);
+        ss >> opcion;
+        
+        if(opcion < 1 || opcion > 6) {
+            cout << "Error: La opción debe estar entre 1 y 6.\n";
+            continue;
+        }
+
+        return opcion;
+    } while(true);
+}
