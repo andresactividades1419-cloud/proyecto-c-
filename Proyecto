@@ -60,52 +60,134 @@ char leerOpcionSN();
 int leerOpcionMenu();
 string leerCodigoPlato();
 
+//dibujos
+
+void dibujoMenu() {
+
+    cout << "+------------------------------------------------------------------+" << endl;
+    cout << "¦                                                                  ¦" << endl;
+    cout << "¦           ¦¦¦+   ¦¦¦+¦¦¦¦¦¦+ ¦¦¦+   ¦¦+¦¦+   ¦¦+             	¦" << endl;
+    cout << "¦           ¦¦¦¦+ ¦¦¦¦¦¦¦+----+¦¦¦¦+  ¦¦¦¦¦¦   ¦¦¦             	¦" << endl;
+    cout << "¦           ¦¦+¦¦¦¦+¦¦¦¦¦¦¦¦+  ¦¦+¦¦+ ¦¦¦¦¦¦   ¦¦¦            		¦" << endl;
+    cout << "¦           ¦¦¦+¦¦++¦¦¦¦¦+--+  ¦¦¦+¦¦+¦¦¦¦¦¦   ¦¦¦                 ¦" << endl;
+    cout << "¦           ¦¦¦ +-+ ¦¦¦¦¦¦¦¦¦+ ¦¦¦ +¦¦¦¦¦+¦¦¦¦¦¦++             	¦" << endl;
+    cout << "¦           +-+     +-++-----+ +-+  +---+ +-----+              	¦" << endl;
+    cout << "¦                                                                  ¦" << endl;
+    cout << "¦                      R E S T A U R A N T E                       ¦" << endl;
+    cout << "¦                        C R I S O L                               ¦" << endl;
+    cout << "¦                                                                  ¦" << endl;
+    cout << "¦------------------------------------------------------------------¦" << endl;
+    cout << "¦                                                                  ¦" << endl;
+    cout << "¦         \"Donde la tradición y el buen sabor se encuentran.\"      ¦" << endl;
+    cout << "¦                                                                  ¦" << endl;
+    cout << "¦------------------------------------------------------------------¦" << endl;
+    cout << "¦                                                                  ¦" << endl;
+    cout << "¦        +--------------------+       +---------------------+      ¦" << endl;
+    cout << "¦        ¦      COCINA        ¦       ¦       BARRA         ¦      ¦" << endl;
+    cout << "¦        +--------------------+       +---------------------+      ¦" << endl;
+    cout << "¦                                                                  ¦" << endl;
+    cout << "¦                    +------------------------+                    ¦" << endl;
+    cout << "¦                    ¦        ENTRADA         ¦                    ¦" << endl;
+    cout << "¦                    +------------------------+                    ¦" << endl;
+    cout << "¦                                                                  ¦" << endl;
+    cout << "+------------------------------------------------------------------+" << endl;
+   
+}
+
+void dibujoArbolNavidad() {
+    cout <<
+".\n"
+"-----------_¦¦_\n"
+"------------¦¦¦¦\n"
+"------------¯¦¦¯\n"
+"-----------¦¦¦\n"
+"----------¦¦¦¦¦¦\n"
+"---------¦¦¦¦¦¦¦¦\n"
+"--------¦¦¦¦O¦¦¦¦¦\n"
+"-------¦¦¦¦¦¦¦O¦¦¦¦\n"
+"-----¦¦¦¦¦O¦¦¦¦¦¦¦¦\n"
+"-----¦¦¦¦O¦¦¦¦¦¦O¦¦¦¦\n"
+"---¦¦¦¦¦¦¦¦¦¦O¦¦¦¦¦¦¦¦\n"
+"--¦¦¦¦¦¦¦¦O¦¦¦¦¦¦¦¦¦¦\n"
+"-------¦¦¦¦¦O¦¦¦¦¦¦\n"
+"------¦¦¦¦¦O¦¦¦¦O¦¦¦¦\n"
+"----¦¦¦¦O¦¦¦¦¦¦¦¦¦¦¦\n"
+"----¦¦¦¦¦¦¦¦O¦¦¦¦¦¦¦¦¦\n"
+"--¦¦¦¦O¦¦¦¦¦¦¦¦¦O¦¦¦¦¦¦\n"
+"--¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦\n"
+"-----¦¦¦¦¦¦¦O¦¦¦O¦¦¦¦¦¦\n"
+"---¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦\n"
+"--¦¦¦¦¦¦¦O¦¦¦¦¦O¦¦¦¦¦¦¦¦¦\n"
+"--¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦\n"
+"-¦¦¦¦¦¦¦O¦¦¦¦O¦¦¦¦¦O¦¦¦¦¦¦\n"
+"¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦\n"
+"-----------¦¦¦¦¦\n"
+"-----------¦¦¦¦¦¦\n"
+"-----------¦¦¦¦¦\n"
+"-----------¦¦¦¦¦\n"
+"-----------¦¦¦¦¦\n"
+"-----------¦¦¦¦¦¦\n"
+"-----------¦¦¦¦¦\n"
+"-----------¦¦¦¦¦\n"
+"-----------¦¦¦¦¦\n"
+"-----------¦¦¦¦¦¦\n"
+"-----------¦¦¦¦¦\n"
+"¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦\n"
+"¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦\n"
+"\nFeliz Navidad!!! \n\n";
+}
+
 // funcion principal
 int main() {
-        SetConsoleOutputCP(1252);
-        setlocale(LC_ALL, "es_ES.UTF-8"); // para tildes y ñ
-        Plato platos[1000]; // arreglo para almacenar platos
-        int numPlatos = 0; // contador de platos
-        int opcion;
-        cargarArchivos(platos, numPlatos); // cargar datos desde archivos
 
-        do {
-            mostrarMenu();
-            opcion = leerOpcionMenu();
-                
-            limpiarConsola();    
+    SetConsoleOutputCP(1252);
+    setlocale(LC_ALL, "es_ES.UTF-8");
 
-            switch (opcion) {
-                case 1:
-                    agregarPlato(platos, numPlatos);
-                    break;
-                case 2:
-                    verMenu(platos, numPlatos);
-                    break;
-                case 3:
-                    realizarPedido(platos, numPlatos);
-                    break;
-                case 4:
-                    calificarPlato(platos, numPlatos);
-                    break;
-                case 5:
-                    verRanking(platos, numPlatos);
-                    break;
-                case 6:
-                    guardarArchivos(platos, numPlatos);
-                    cout << "\n===  GRACIAS POR UTILIZAR NUESTRO PROGRAMA===\n";
-                    cout << "Datos guardados exitosamente.\n";
-                    break;
-                default:
-                    cout << "Opción inválida. Por favor, intente de nuevo.\n";
-            }
-            if (opcion != 6) {
-                cout << "\nPresione Enter para continuar...";
-                cin.ignore();
-                cin.get();
-            }
-        } while (opcion != 6);
-        return 0;
+    Plato platos[1000];
+    int numPlatos = 0;
+    int opcion;
+
+    cargarArchivos(platos, numPlatos);
+
+    // ?? MOSTRAR CABAÑA ANTES DEL MENÚ
+    limpiarConsola();
+    dibujoMenu();
+    cout << "Presione Enter para continuar...";
+    cin.get();
+
+    do {
+        limpiarConsola();
+        mostrarMenu();
+        opcion = leerOpcionMenu();
+
+        limpiarConsola();
+
+        switch (opcion) {
+            case 1: agregarPlato(platos, numPlatos); break;
+            case 2: verMenu(platos, numPlatos); break;
+            case 3: realizarPedido(platos, numPlatos); break;
+            case 4: calificarPlato(platos, numPlatos); break;
+            case 5: verRanking(platos, numPlatos); break;
+            case 6:
+                guardarArchivos(platos, numPlatos);
+                cout << "\n=== GRACIAS POR UTILIZAR EL PROGRAMA ===\n";
+                break;
+        }
+
+        if (opcion != 6) {
+            cout << "\nPresione Enter para continuar...";
+            cin.ignore();
+            cin.get();
+
+            limpiarConsola();
+            dibujoArbolNavidad();   // ? SE MUESTRA DESPUÉS DE CADA USO DEL MENÚ
+            cout << "Presione Enter para volver al menú...";
+            cin.get();
+        }
+
+    } while (opcion != 6);
+
+    return 0;
 }
 
 //ahora implementamos las funciones declaradas
