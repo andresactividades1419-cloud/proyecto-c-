@@ -254,11 +254,67 @@ void realizarPedido(Plato platos[], int numPlatos) {
     }
  
 //factura del pedido
-void mostrarFactura(ItemPedido pedido[], int numItems, double subtotal, double iva, double total) {
-       
-            
+void mostrarFactura(ItemPedido pedido[], int numItems, double subtotal, double iva, double total) { 
+    cout << "Comentario (opcional, presione ENTER para omitir): ";
+    getline(cin, comentario);
+    
+    platos[pos].sumaCalificaciones += calificacion;
+    platos[pos].numCalificaciones++;
+    platos[pos].promedio = platos[pos].sumaCalificaciones / platos[pos].numCalificaciones;
+    
+    cout << "\n¡Gracias por su calificación!\n";
+    cout << "Plato: " << platos[pos].nombre << "\n";
+    cout << "Nueva calificación promedio: " << fixed << setprecision(2) 
+         << platos[pos].promedio << "\n";
+}
 
-                            
-                        
-                        
-                        
+void verRanking(Plato platos[], int numPlatos) {
+    if(numPlatos == 0) {
+        cout << "\nNo hay platos para mostrar.\n";
+        return;
+    }
+    
+    // Crear copia para ordenar
+    Plato platosOrdenados[1000];
+    for(int i = 0; i < numPlatos; i++) {
+        platosOrdenados[i] = platos[i];
+    }
+    
+    ordenarPorCalificacion(platosOrdenados, numPlatos);
+    
+    cout << "\n+----------------------------------------------------------------+\n";
+    cout << "¦              RANKING DE PLATOS (MEJOR A PEOR)                  ¦\n";
+    cout << "+----------------------------------------------------------------+\n\n";
+    
+    cout << left << setw(6) << "Pos" 
+         << setw(30) << "Nombre" 
+         << setw(15) << "Precio" 
+         << "Calificación\n";
+    cout << "----------------------------------------------------------------\n";
+    
+    for(int i = 0; i < numPlatos; i++) {
+        cout << left << setw(6) << (i+1)
+             << setw(30) << platosOrdenados[i].nombre
+             << "$" << setw(14) << fixed << setprecision(2) << platosOrdenados[i].precio;
+        
+        if(platosOrdenados[i].numCalificaciones > 0) {
+            cout << platosOrdenados[i].promedio << " (" 
+                 << platosOrdenados[i].numCalificaciones << " votos)";
+        } else {
+            cout << "Sin calificar";
+        }
+        cout << "\n";
+    }
+}
+
+void guardarArchivos(Plato platos[], int numPlatos) {
+    // Guardar menu
+    ofstream archivoMenu("menu.txt");
+    if(archivoMenu.is_open()) {
+        for(int i = 0; i < numPlatos; i++) {
+            archivoMenu << platos[i].codigo << "|"
+                       << platos[i].nombre << "|"
+                       << platos[i].precio << "\n";
+        }
+        archivoMenu.close();
+    }
