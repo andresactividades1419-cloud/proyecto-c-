@@ -256,27 +256,27 @@ void realizarPedido(Plato platos[], int numPlatos) {
 //factura del pedido
 void mostrarFactura(ItemPedido pedido[], int numItems, double subtotal, double iva, double total) { 
    cout << "\n\n";
-    cout << "+----------------------------------------------------------------+\n";
-    cout << "¦                            FACTURA                             ¦\n";
-    cout << "¦----------------------------------------------------------------¦\n";
-    cout << "¦  Restaurante Digital                                           ¦\n";
-    cout << "¦  NIT: 123456789-0                                              ¦\n";
-    cout << "¦----------------------------------------------------------------¦\n";
+    cout << "-----------------------------------------------------------------\n";
+    cout << "                            FACTURA                             \n";
+    cout << "----------------------------------------------------------------\n";
+    cout << "  Restaurante Digital                                           \n";
+    cout << "  NIT: 123456789-0                                              \n";
+    cout << "----------------------------------------------------------------\n";
     
     for(int i = 0; i < numItems; i++) {
         cout << "¦  " << left << setw(45) << pedido[i].nombrePlato 
              << "$" << right << setw(12) << fixed << setprecision(2) << pedido[i].precio << " ¦\n";
     }
     
-    cout << "¦----------------------------------------------------------------¦\n";
-    cout << "¦  " << left << setw(45) << "SUBTOTAL:" 
-         << "$" << right << setw(12) << fixed << setprecision(2) << subtotal << " ¦\n";
-    cout << "¦  " << left << setw(45) << "IVA (19%):" 
-         << "$" << right << setw(12) << fixed << setprecision(2) << iva << " ¦\n";
-    cout << "¦----------------------------------------------------------------¦\n";
-    cout << "¦  " << left << setw(45) << "TOTAL:" 
-         << "$" << right << setw(12) << fixed << setprecision(2) << total << " ¦\n";
-    cout << "+----------------------------------------------------------------+\n";
+    cout << "----------------------------------------------------------------\n";
+    cout << "  " << left << setw(45) << "SUBTOTAL:" 
+         << "$" << right << setw(12) << fixed << setprecision(2) << subtotal << "\n";
+    cout << "  " << left << setw(45) << "IVA (19%):" 
+         << "$" << right << setw(12) << fixed << setprecision(2) << iva << "\n";
+    cout << "----------------------------------------------------------------\n";
+    cout << "  " << left << setw(45) << "TOTAL:" 
+         << "$" << right << setw(12) << fixed << setprecision(2) << total << "\n";
+    cout << "----------------------------------------------------------------\n";
     cout << "\n            ¡Gracias por su compra!\n";
 }
 
@@ -345,9 +345,9 @@ void verRanking(Plato platos[], int numPlatos) {
     
     ordenarPorCalificacion(platosOrdenados, numPlatos);
     
-    cout << "\n+----------------------------------------------------------------+\n";
-    cout << "¦              RANKING DE PLATOS (MEJOR A PEOR)                  ¦\n";
-    cout << "+----------------------------------------------------------------+\n\n";
+    cout << "\n----------------------------------------------------------------\n";
+    cout << "              RANKING DE PLATOS (MEJOR A PEOR)                  \n";
+    cout << "----------------------------------------------------------------\n\n";
     
     cout << left << setw(6) << "Pos" 
          << setw(30) << "Nombre" 
@@ -394,3 +394,95 @@ void guardarArchivos(Plato platos[], int numPlatos) {
         archivoCalif.close();
     }
 }
+// cargar datos desde archivos
+void cargarArchivos(Plato platos[], int &numPlatos) {
+    numPlatos = 0;
+
+    // cargar menu
+    ifstream archivoMenu("menu.txt");
+    if(archivoMenu.is_open()) {
+        string linea;
+        while(getline(archivoMenu, linea)) {
+            size_t pos1 = linea.find("|");
+            size_t pos2 = linea.find("|", pos1 + 1);
+
+            if(pos1 != string::npos && pos2 != string::npos){
+                platos[numPlatos].codigo = linea.substr(0, pos1);
+                platos[numPlatos].nombre = linea.substr(pos1 + 1, pos2 - pos1 - 1);
+
+                // Convertir precio a double
+                stringstream ss(linea.substr(pos2 + 1));
+                ss >> platos[numPlatos].precio;
+                platos[numPlatos].numCalificaciones = 0;
+                platos[numPlatos].sumaCalificaciones = 0;
+                platos[numPlatos].promedio = 0;
+                numPlatos++;
+            }
+        }
+        archivoMenu.close();
+    }
+
+    // cargar calificaciones
+    ifstream archivoCalif("calificaciones.txt");
+    if(archivoCalif.is_open ()){
+        string linea;
+        while(getline(archivoCalif, linea)) {
+            size_t pos1 = linea.find("|");
+            size_t pos2 = linea.find("|", pos1 + 1);
+            size_t pos3 = linea.find("|", pos2 + 1);
+
+            if(pos1 != string::npos && pos2 != string::npos && pos3 != string::npos){
+                string codigo = linea.substr(0, pos1);
+                int pos = buscarPlato(platos, numPlatos, codigo);
+                if(pos != -1){
+                    // Convertir numCalificaciones a int
+                    stringstream ss1(linea.substr(pos1 + 1, pos2 - pos1 - 1));
+                    ss1 >> platos[pos].numCalificaciones;
+                    // Convertir sumaCalificaciones a double
+                    stringstream ss2(linea.substr(pos2 + 1, pos3 - pos2 - 1));
+                    ss2 >> platos[pos].sumaCalificaciones;
+
+                    // Convertir promedio a double
+                    stringstream ss3(linea.substr(pos3 + 1));
+                    ss3 >> platos[pos].promedio;
+                }
+            }
+        }
+        archivoCalif.close();
+    }
+}
+// buscar plato por codigo
+int buscarPlato(Plato platos[], int numPlatos, string codigo) {
+    for(int i = 0; i < numPlatos; i++) {
+        if(platos[i].codigo == codigo) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// ordenar platos por calificacion promedio 
+void ordenarPorCalificacion(Plato platos[], int numPlatos) {
+    for(int i = 0; i < numPlatos - 1; i++) {
+        for(int j = 0; j < numPlatos - i - 1; j++) {
+            // ordenar de mayor a menor
+            // no calificado se muestran al final
+            bool intercambiar = false;
+
+            if(platos[j].numCalificaciones == 0 && platos[j + 1].numCalificaciones > 0) {
+                intercambiar = true;
+            } else if(platos[j].numCalificaciones > 0 && platos[j + 1].numCalificaciones > 0) {
+                if(platos[j].promedio < platos[j + 1].promedio) {
+                    intercambiar = true;
+                }
+            }
+            if(intercambiar) {
+                Plato temp = platos[j];
+                platos[j] = platos[j + 1];
+                platos[j + 1] = temp;
+            }
+        }
+    }
+}
+// funciones de validacion y lectura de datos
+            
