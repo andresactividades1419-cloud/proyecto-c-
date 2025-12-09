@@ -255,6 +255,69 @@ void realizarPedido(Plato platos[], int numPlatos) {
  
 //factura del pedido
 void mostrarFactura(ItemPedido pedido[], int numItems, double subtotal, double iva, double total) { 
+   cout << "\n\n";
+    cout << "+----------------------------------------------------------------+\n";
+    cout << "¦                            FACTURA                             ¦\n";
+    cout << "¦----------------------------------------------------------------¦\n";
+    cout << "¦  Restaurante Digital                                           ¦\n";
+    cout << "¦  NIT: 123456789-0                                              ¦\n";
+    cout << "¦----------------------------------------------------------------¦\n";
+    
+    for(int i = 0; i < numItems; i++) {
+        cout << "¦  " << left << setw(45) << pedido[i].nombrePlato 
+             << "$" << right << setw(12) << fixed << setprecision(2) << pedido[i].precio << " ¦\n";
+    }
+    
+    cout << "¦----------------------------------------------------------------¦\n";
+    cout << "¦  " << left << setw(45) << "SUBTOTAL:" 
+         << "$" << right << setw(12) << fixed << setprecision(2) << subtotal << " ¦\n";
+    cout << "¦  " << left << setw(45) << "IVA (19%):" 
+         << "$" << right << setw(12) << fixed << setprecision(2) << iva << " ¦\n";
+    cout << "¦----------------------------------------------------------------¦\n";
+    cout << "¦  " << left << setw(45) << "TOTAL:" 
+         << "$" << right << setw(12) << fixed << setprecision(2) << total << " ¦\n";
+    cout << "+----------------------------------------------------------------+\n";
+    cout << "\n            ¡Gracias por su compra!\n";
+}
+
+void calificarPlato(Plato platos[], int numPlatos) {
+    if(numPlatos == 0) {
+        cout << "\nNo hay platos para calificar.\n";
+        return;
+    }
+    
+    string codigo;
+    int calificacion;
+    string comentario;
+    int pos = -1;
+    
+    cout << "\n=== CALIFICAR PLATO ===\n";
+    cout << "(Escriba '0' para volver al menú principal)\n\n";
+    verMenu(platos, numPlatos);
+    
+    do {
+        cout << "\nIngrese el código del plato a calificar: ";
+        codigo = leerCodigoPlato();
+        
+        if(codigo == "0") {
+            cout << "\nRegresando al menú principal...\n";
+            return;
+        }
+        
+        pos = buscarPlato(platos, numPlatos, codigo);
+        
+        if(pos == -1) {
+            cout << "Error: Plato no encontrado. Intente nuevamente.\n";
+        }
+    } while(pos == -1);
+    
+    calificacion = leerCalificacion();
+    
+    if(calificacion == -1) {
+        cout << "\nRegresando al menú principal...\n";
+        return;
+    }
+    
     cout << "Comentario (opcional, presione ENTER para omitir): ";
     getline(cin, comentario);
     
@@ -318,3 +381,16 @@ void guardarArchivos(Plato platos[], int numPlatos) {
         }
         archivoMenu.close();
     }
+    
+    // Guardar calificaciones
+    ofstream archivoCalif("calificaciones.txt");
+    if(archivoCalif.is_open()) {
+        for(int i = 0; i < numPlatos; i++) {
+            archivoCalif << platos[i].codigo << "|"
+                        << platos[i].numCalificaciones << "|"
+                        << platos[i].sumaCalificaciones << "|"
+                        << platos[i].promedio << "\n";
+        }
+        archivoCalif.close();
+    }
+}
