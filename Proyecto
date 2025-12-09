@@ -149,7 +149,6 @@ int main() {
 
     cargarArchivos(platos, numPlatos);
 
-    // ?? MOSTRAR CABAÑA ANTES DEL MENÚ
     limpiarConsola();
     dibujoMenu();
     cout << "Presione Enter para continuar...";
@@ -163,25 +162,41 @@ int main() {
         limpiarConsola();
 
         switch (opcion) {
-            case 1: agregarPlato(platos, numPlatos); break;
-            case 2: verMenu(platos, numPlatos); break;
-            case 3: realizarPedido(platos, numPlatos); break;
-            case 4: calificarPlato(platos, numPlatos); break;
-            case 5: verRanking(platos, numPlatos); break;
+            case 1:
+                agregarPlato(platos, numPlatos);
+                break;
+
+            case 2:
+                verMenu(platos, numPlatos);
+                break;
+
+            case 3:
+                realizarPedido(platos, numPlatos);
+                break;
+
+            case 4:
+                calificarPlato(platos, numPlatos);
+                break;
+
+            case 5:
+                verRanking(platos, numPlatos);
+                break;
+
             case 6:
                 guardarArchivos(platos, numPlatos);
                 cout << "\n=== GRACIAS POR UTILIZAR EL PROGRAMA ===\n";
+                cout << "Datos guardados exitosamente.\n\n";
+
+                dibujoArbolNavidad();
+                cout << "\nPresione Enter para salir...";
+                cin.ignore();
+            	cin.get();
                 break;
         }
 
-        if (opcion != 6) {
+          if (opcion != 6) {
             cout << "\nPresione Enter para continuar...";
             cin.ignore();
-            cin.get();
-
-            limpiarConsola();
-            dibujoArbolNavidad();   // ? SE MUESTRA DESPUÉS DE CADA USO DEL MENÚ
-            cout << "Presione Enter para volver al menú...";
             cin.get();
         }
 
@@ -189,14 +204,13 @@ int main() {
 
     return 0;
 }
-
 //ahora implementamos las funciones declaradas
 void mostrarMenu() {
         limpiarConsola();
         cout << "\n--------------------------------------------------\n";
         cout << "     SISTEMA DE MENÚ DIGITAL RESTAURANTE         \n";
         cout << "--------------------------------------------------\n";
-        cout << "\n 1. Agregar plato al menú\n";
+        cout << "\n 1. Gestión de platos\n";
         cout << " 2. Ver menú completo\n";
         cout << " 3. Realizar pedido\n";
         cout << " 4. Calificar plato\n";
@@ -204,68 +218,122 @@ void mostrarMenu() {
         cout << " 6. Salir\n";
         cout << "\n------------------------------------------------\n";
 }
-// agregar un nuevo plato al menu
+// agregar o eliminar platos
 void agregarPlato(Plato platos[], int &numPlatos) {
-    Plato nuevo;
-    string opcion;
-    
-    cout << "\n=== AGREGAR NUEVO PLATO ===\n";
-    cout << "(Escriba '0' en cualquier momento para volver al menú principal)\n\n";
-    
-    // Validar código
-    do {
-        cout << "Código del plato (solo números): ";
-        getline(cin, nuevo.codigo);
-        
-        if(nuevo.codigo == "0") {
-            cout << "\nRegresando al menú principal...\n";
+
+    int opcionSub;
+
+    cout << "\n=== GESTIONAR PLATOS ===\n";
+    cout << "1. Agregar plato\n";
+    cout << "2. Eliminar plato\n";
+    cout << "3. Volver al menú principal\n";
+    cout << "Seleccione una opción: ";
+    opcionSub = leerOpcionMenu();
+   
+    if(opcionSub == 3) return;
+
+   	//agregar plato
+    if(opcionSub == 1) {
+
+        Plato nuevo;
+        string opcion;
+
+        cout << "\n=== AGREGAR NUEVO PLATO ===\n";
+        cout << "(Escriba '0' en cualquier momento para volver)\n\n";
+
+        // validar codigo
+        do {
+            cout << "Código del plato (solo números): ";
+            getline(cin, nuevo.codigo);
+
+            if(nuevo.codigo == "0") {
+                cout << "\nRegresando...\n";
+                return;
+            }
+
+            if(!validarNoVacio(nuevo.codigo)) {
+                cout << "Error: El código no puede estar vacío.\n";
+            } else if(!validarSoloNumeros(nuevo.codigo)) {
+                cout << "Error: El código solo debe contener números.\n";
+                nuevo.codigo = "";
+            } else if(buscarPlato(platos, numPlatos, nuevo.codigo) != -1) {
+                cout << "Error: Ya existe un plato con ese código.\n";
+                nuevo.codigo = "";
+            }
+        } while(!validarNoVacio(nuevo.codigo));
+
+        // validar nombre
+        do {
+            cout << "Nombre del plato: ";
+            getline(cin, nuevo.nombre);
+
+            if(nuevo.nombre == "0") {
+                cout << "\nRegresando...\n";
+                return;
+            }
+
+            if(!validarNoVacio(nuevo.nombre)) {
+                cout << "Error: El nombre no puede estar vacío.\n";
+            } else if(!validarTexto(nuevo.nombre)) {
+                cout << "Error: El nombre solo debe contener letras.\n";
+            }
+        } while(!validarNoVacio(nuevo.nombre) || !validarTexto(nuevo.nombre));
+
+        // validar precio
+        nuevo.precio = leerPrecio();
+
+        if(nuevo.precio == -1) {
+            cout << "\nRegresando...\n";
             return;
         }
-        
-        if(!validarNoVacio(nuevo.codigo)) {
-            cout << "Error: El código no puede estar vacío.\n";
-        } else if(!validarSoloNumeros(nuevo.codigo)) {
-            cout << "Error: El código solo debe contener números.\n";
-            nuevo.codigo = "";
-        } else if(buscarPlato(platos, numPlatos, nuevo.codigo) != -1) {
-            cout << "Error: Ya existe un plato con ese código.\n";
-            nuevo.codigo = "";
-        }
-    } while(!validarNoVacio(nuevo.codigo));
-    
-    // Validar nombre
-    do {
-        cout << "Nombre del plato: ";
-        getline(cin, nuevo.nombre);
-        
-        if(nuevo.nombre == "0") {
-            cout << "\nRegresando al menú principal...\n";
-            return;
-        }
-        
-        if(!validarNoVacio(nuevo.nombre)) {
-            cout << "Error: El nombre no puede estar vacío.\n";
-        } else if(!validarTexto(nuevo.nombre)) {
-            cout << "Error: El nombre solo debe contener letras y espacios.\n";
-        }
-    } while(!validarNoVacio(nuevo.nombre) || !validarTexto(nuevo.nombre));
-    
-    // Validar precio
-    nuevo.precio = leerPrecio();
-    
-    if(nuevo.precio == -1) {
-        cout << "\nRegresando al menú principal...\n";
+
+        nuevo.numCalificaciones = 0;
+        nuevo.sumaCalificaciones = 0;
+        nuevo.promedio = 0;
+
+        platos[numPlatos] = nuevo;
+        numPlatos++;
+
+        cout << "\n¡Plato agregado exitosamente!\n";
         return;
     }
-    
-    nuevo.numCalificaciones = 0;
-    nuevo.sumaCalificaciones = 0;
-    nuevo.promedio = 0;
-    
-    platos[numPlatos] = nuevo;
-    numPlatos++;
-    
-    cout << "\n¡Plato agregado exitosamente!\n";
+
+	//eliminar plato
+    if(opcionSub == 2) {
+
+        if(numPlatos == 0) {
+            cout << "\nNo hay platos para eliminar.\n";
+            return;
+        }
+
+        string codigo;
+        cout << "\n=== ELIMINAR PLATO ===\n";
+        verMenu(platos, numPlatos);
+
+        cout << "\nIngrese el código del plato a eliminar (0 para volver): ";
+        getline(cin, codigo);
+
+        if(codigo == "0") {
+            cout << "\nRegresando...\n";
+            return;
+        }
+
+        int pos = buscarPlato(platos, numPlatos, codigo);
+
+        if(pos == -1) {
+            cout << "Error: Ese código no existe.\n";
+            return;
+        }
+
+        for(int i = pos; i < numPlatos - 1; i++) {
+            platos[i] = platos[i + 1];
+        }
+
+        numPlatos--;
+
+        cout << "\nPlato eliminado correctamente.\n";
+        return;
+    }
 }
 
 // mostrar el menu completo
